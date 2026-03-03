@@ -38,7 +38,7 @@ function initSocketServer(httpServer){
 
         console.log(messagePayLoad)
 
-        const message = await messageModel.create({
+        /* const message = await messageModel.create({
             chat:messagePayLoad.chat,
             user:socket.user._id,
             content:messagePayLoad.content,
@@ -48,7 +48,28 @@ function initSocketServer(httpServer){
         
 
         const vectors = await aiService.generateVector(messagePayLoad.content)
-        console.log("vector generated",vectors)
+        console.log("vector generated",vectors) */
+        
+        const vectors = await aiService.generateVector(messagePayLoad.content)
+
+        const message=await messageModel.create({
+            chat:messagePayLoad.chat,
+            user:socket.user._id,
+            content:messagePayLoad.content,
+            role:"user"
+        })
+        
+    
+        await createMemory({
+            vectors,
+            messageId:message._id,
+            metadata:{
+                chat:messagePayLoad.chat,
+                user:socket.user._id,
+                text:messagePayLoad.content
+            }
+        })
+        
         
         const memory = await queryMemory({
             queryVector:vectors,
@@ -103,7 +124,7 @@ function initSocketServer(httpServer){
 
         const response = await aiService.generateResponse([...ltm, ...stm])
 
-        const responseMessage = await messageModel.create({
+        /* const responseMessage = await messageModel.create({
 
             chat: messagePayLoad.chat,
             user: socket.user._id,
@@ -112,6 +133,25 @@ function initSocketServer(httpServer){
         })
 
         const responseVector = await aiService.generateVector(response)
+
+ */ 
+        socket.emit("ai-response",{
+            content:response,
+            chat:messagePayLoad.chat
+        })
+
+        const [responseMessage,responseVector] = await Promise.all([
+            messageModel.create({
+
+            chat: messagePayLoad.chat,
+            user: socket.user._id,
+            content: response,
+            role: "model"
+        }),
+        aiService.generateVector(response)
+
+        ])
+
 
         await createMemory({
             vectors:responseVector,
@@ -123,10 +163,7 @@ function initSocketServer(httpServer){
             }
         })
 
-        socket.emit("ai-response",{
-            content:response,
-            chat:messagePayLoad.chat
-        })
+       
        })
     })
 }
