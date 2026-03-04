@@ -4,7 +4,7 @@ const { json } = require('express');
 const jwt = require('jsonwebtoken');
 
 async function registerUser(req, res){
-    const { fullName :{firstName,lastName},email, password} = req.body;
+    const { firstName,lastName,email, password} = req.body;
 
     //console.log("BODY 👉", req.body);
 
