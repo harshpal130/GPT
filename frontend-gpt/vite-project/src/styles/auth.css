@@ -1,0 +1,80 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  border: 1px solid var(--input-border);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.auth-header h2 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 15px;
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  background: var(--primary);
+  color: var(--primary-contrast);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.auth-foot {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.auth-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+/* larger screens: small tweaks */
+@media (min-width: 768px) {
+  .auth-card { padding: 28px; }
+  .auth-header h2 { font-size: 22px; }
+}
