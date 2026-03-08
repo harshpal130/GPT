@@ -5,6 +5,10 @@ const chatController = require('../controllers/chat.controller')
 const router = express.Router();
 
 router.post("/" , authMiddleware.authUser, chatController.createChat)
+router.get("/", authMiddleware.authUser, chatController.getChats)
+
+// get/api/chat/messages/:id/
+router.get("/messages/:id", authMiddleware.authUser, chatController.getMessages)
 
 
 

@@ -4,17 +4,17 @@ const chatSlice = createSlice({
   name: 'chat',
   initialState: {
     list: [
-      { id: 1, title: 'Chat 1' },
-      { id: 2, title: 'Chat 2' },
+      // { id: 1, title: 'Chat 1' },
+      // { id: 2, title: 'Chat 2' },
     ], // array of {id, title}
     currentChatId: null,
   },
   reducers: {
     addChat: (state, action) => {
-      const title = action.payload;
-      const id = Date.now();
-      state.list.unshift({ id, title });
-      state.currentChatId = id;
+    state.list.unshift(action.payload);
+    },
+    setChat :(state, action)=>{
+      state.chats = action.payload
     },
     setCurrentChat: (state, action) => {
       state.currentChatId = action.payload;
@@ -22,5 +22,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { addChat, setCurrentChat } = chatSlice.actions;
+export const { addChat, setCurrentChat ,setChat } = chatSlice.actions;
 export default chatSlice.reducer;

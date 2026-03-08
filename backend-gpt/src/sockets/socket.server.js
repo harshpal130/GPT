@@ -8,7 +8,13 @@ const {createMemory, queryMemory}= require("../services/vector.service");
 const { text } = require("express");
 
 function initSocketServer(httpServer){
-    const io = new Server(httpServer,{})
+    const io = new Server(httpServer, {
+    cors: {
+        origin: "http://localhost:5173",
+        methods: ["GET","POST"],
+        credentials: true
+    }
+})
 
     io.use(async(socket, next)=>{
 
@@ -35,6 +41,17 @@ function initSocketServer(httpServer){
 
     io.on("connection",(socket)=>{
        socket.on("ai-message", async(messagePayLoad)=>{
+        if (!messagePayLoad?.content || !messagePayLoad.content.trim()) {
+        console.log("❌ Empty message blocked");
+        return;
+    }
+
+    if (!messagePayLoad?.chat) {
+        console.log("❌ No chat id provided");
+        return;
+    }
+
+    console.log("Incoming message:", messagePayLoad);
 
         console.log(messagePayLoad)
 
@@ -80,15 +97,15 @@ function initSocketServer(httpServer){
 
         console.log(memory)
 
-        await createMemory({
-            vectors,
-            messageId:message._id,
-            metadata:{
-                chat:messagePayLoad.chat,
-                user:socket.user._id,
-                text:messagePayLoad.content
-            }
-        })
+        // await createMemory({
+        //     vectors,
+        //     messageId:message._id,
+        //     metadata:{
+        //         chat:messagePayLoad.chat,
+        //         user:socket.user._id,
+        //         text:messagePayLoad.content
+        //     }
+        // })
 
         const chatHistory = (await messageModel.find({
             chat:messagePayLoad.chat
@@ -158,7 +175,7 @@ function initSocketServer(httpServer){
             messageId:responseMessage._id,
             metadata:{
                 chat:messagePayLoad.chat,
-                user:socket.user.id,
+                user:socket.user._id,
                 text:response
             }
         })

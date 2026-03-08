@@ -9,6 +9,7 @@ import '../styles/input.css';
 import Sidebar from '../components/Sidebar';
 import ChatMessages from '../components/ChatMessages';
 import ChatInput from '../components/ChatInput';
+import axios from 'axios'
 
 // redux actions
 import { addChat, setCurrentChat } from '../store/chatSlice';
@@ -29,37 +30,64 @@ const Home = () => {
 
   useEffect(() => {
     // Connect to socket
-    socketRef.current = io('http://localhost:3000');
+    socketRef.current = io('http://localhost:3000',{
+      withCredentials: true,
+      
+    })
+    
+    socketRef.current.on("connect", ()=>{
+      console.log("socket connnected", socketRef.current.id)
 
-    socketRef.current.on('ai-response', (data) => {
-      if (currentChatId) {
-        dispatch(addMessage({
-          chatId: currentChatId,
-          message: { role: 'ai', content: data.content },
-        }));
-      }
-    });
+    })
+
+    socketRef.current.on("ai-response", (data) => {
+    
+      console.log("AI response:", data);
+
+      dispatch(addMessage({
+      chatId: data.chat,
+      message: {
+      role: "ai",
+      content: data.content
+    }
+  }));
+});
 
     return () => {
       socketRef.current.disconnect();
     };
-  }, [currentChatId, dispatch]);
+  }, []);
 
   const sendMessage = () => {
+    console.log("currentChatId:", currentChatId);
+    console.log("socket:", socketRef.current);
+    console.log("userInput:", userInput);
+
     if (!userInput.trim() || !currentChatId) return;
+
+    if (!currentChatId) {
+      console.log("No chat selected");
+      return;
+      }
+
+    if (!socketRef.current) {
+    console.log("Socket not connected");
+    return;
+  }
 
     const message = userInput.trim();
     dispatch(addMessage({
       chatId: currentChatId,
       message: { role: 'user', content: message },
     }));
-    setUserInput('');
+    
 
     // Emit to socket
     socketRef.current.emit('ai-message', {
       chat: currentChatId,
       content: message,
     });
+    setUserInput('');
   };
 
   const handleKeyPress = (e) => {
@@ -68,21 +96,49 @@ const Home = () => {
     }
   };
 
-  const selectChat = (chatId) => {
-    dispatch(setCurrentChat(chatId));
-    dispatch(clearMessages(chatId));
-    setSidebarOpen(false);
-  };
+  const selectChat = async (chatId) => {
+  dispatch(setCurrentChat(chatId));
+  dispatch(clearMessages(chatId));
+  setSidebarOpen(false);
 
-  const createNewChat = () => {
-    const title = window.prompt('Enter a name for this chat');
-    if (!title || !title.trim()) return;
-    dispatch(addChat(title.trim()));
-  };
+  await getMessage(chatId);
+};
+
+ const createNewChat = async () => {
+  const title = window.prompt("Enter a name for this chat");
+  if (!title || !title.trim()) return;
+
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/api/chat",
+      { title },
+      { withCredentials: true }
+    );
+
+    console.log("API response:", response.data);
+
+    const chat = response.data.chat || response.data;
+
+    dispatch(addChat(chat));
+    dispatch(setCurrentChat(chat._id));
+
+  } catch (err) {
+    console.error(err);
+  }
+};
+  
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  const getMessage = async(chatId)=>{
+    const response =  await axios.get(`http://localhost:3000/api/chat/messages/${chatId}` , {
+      withCredentials:true
+    })
+    console.log('messages fetched successfully', response.data.messages)
+
+  }
 
   return (
     <div className="chat-container">
@@ -95,7 +151,7 @@ const Home = () => {
         onToggleSidebar={toggleSidebar}
       />
       <div className="chat-main">
-        {currentChatId === null || messages.length === 0 ? (
+        {!currentChatId ?(
           <div className="welcome-container">
             <p className="welcome-label">Early Preview</p>
             <h1 className="welcome-title">ChatGPT Clone</h1>
