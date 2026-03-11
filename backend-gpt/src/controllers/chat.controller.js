@@ -38,7 +38,8 @@ async function getChats(req, res) {
 
 async function getMessages(req, res){
     const chatId = req.params.id;
-    const messages = await messageModel.find({chat : chatId}).sort({ createdAt : -1})
+    const messages = await messageModel.find({chat : chatId}).sort({ createdAt : 1})
+    
 
     res.status(200).json({
         message :"message retrive successfully",

@@ -58,6 +58,12 @@ const Home = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (currentChatId) {
+    getMessage(currentChatId);
+    }
+    }, [currentChatId]);
+
   const sendMessage = () => {
     console.log("currentChatId:", currentChatId);
     console.log("socket:", socketRef.current);
@@ -98,7 +104,7 @@ const Home = () => {
 
   const selectChat = async (chatId) => {
   dispatch(setCurrentChat(chatId));
-  dispatch(clearMessages(chatId));
+  
   setSidebarOpen(false);
 
   await getMessage(chatId);
@@ -137,6 +143,18 @@ const Home = () => {
       withCredentials:true
     })
     console.log('messages fetched successfully', response.data.messages)
+    fetchedMessages.forEach((msg) => {
+
+      dispatch(
+        addMessage({
+          chatId: chatId,
+          message: {
+            role: msg.role,
+            content: msg.content
+        }
+      })
+    );
+  });
 
   }
 
@@ -153,8 +171,8 @@ const Home = () => {
       <div className="chat-main">
         {!currentChatId ?(
           <div className="welcome-container">
-            <p className="welcome-label">Early Preview</p>
-            <h1 className="welcome-title">ChatGPT Clone</h1>
+            <p className="welcome-label">hey ! there How can i help you !!</p>
+            <h1 className="welcome-title">JERVIS</h1>
             <p className="welcome-description">
               Ask anything. Paste text, brainstorm ideas, or get quick explanations. 
               Your chats stay in the sidebar so you can pick up where you left off

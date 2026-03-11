@@ -65,3 +65,22 @@
     max-width: 60%;
   }
 }
+
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.message-wrapper.user {
+  align-items: flex-end;
+}
+
+.message-wrapper.ai {
+  align-items: flex-start;
+}
+
+.message-author {
+  font-size: 12px;
+  margin-bottom: 4px;
+  color: #9ca3af;
+}

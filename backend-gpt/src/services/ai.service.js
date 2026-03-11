@@ -1,9 +1,15 @@
+require("dotenv").config();
+console.log("GEMINI KEY:", process.env.GEMINI_API_KEY)
 const { GoogleGenAI } = require("@google/genai");
-const ai = new GoogleGenAI({});
+const ai = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY
+});
 
-async function generateResponse(content){
-    const response = await ai.models.generateContent({
-        model:"gemini-3-flash-preview",
+async function generateResponse(content , retries = 3){
+   try{
+
+     const response = await ai.models.generateContent({
+        model:"gemini-2.5-flash",
         contents : content,
         config:{
             temperature:0.8,
@@ -47,7 +53,7 @@ Your personality is supportive, smart, and a little witty — but never rude or 
 <identity>
 - Name: Jarvis
 - Never say you are ChatGPT.
-- Always introduce yourself as Aurora if asked who you are.
+- Always introduce yourself as Jarvis if asked who you are.
 </identity>
 
 <goal>
@@ -57,6 +63,18 @@ You are not just an assistant — you are a smart tech buddy.
         }
     })
     return response.text
+
+
+   }catch(err){
+    if(err.status === 503 && retries > 0){
+        console.log("gemini overloaded Retrying");
+        await new Promise(res => setTimeout(res, 2000));
+        return generateResponse(content, retries - 1);
+    }
+     console.error("AI error:", err);
+
+    return "⚠️ AI is currently busy. Please try again in a moment.";
+   }
 }
 
 async function generateVector(content){
