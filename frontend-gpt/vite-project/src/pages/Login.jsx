@@ -22,7 +22,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    axios.post("http://localhost:3000/api/auth/login", form ,{
+    axios.post("https://gpt-a71p.onrender.com//api/auth/login", form ,{
         withCredentials:true
     })
     .then((res)=>{

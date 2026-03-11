@@ -24,7 +24,7 @@ const Register = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    axios.post("http://localhost:3000/api/auth/register", form,{
+    axios.post("https://gpt-a71p.onrender.com//api/auth/register", form,{
       withCredentials:true
     })
     .then((res)=>{

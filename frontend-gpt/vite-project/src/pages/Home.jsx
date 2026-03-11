@@ -30,7 +30,7 @@ const Home = () => {
 
   useEffect(() => {
     // Connect to socket
-    socketRef.current = io('http://localhost:3000',{
+    socketRef.current = io('https://gpt-a71p.onrender.com/',{
       withCredentials: true,
       
     })
@@ -116,7 +116,7 @@ const Home = () => {
 
   try {
     const response = await axios.post(
-      "http://localhost:3000/api/chat",
+      "https://gpt-a71p.onrender.com//api/chat",
       { title },
       { withCredentials: true }
     );
@@ -139,7 +139,7 @@ const Home = () => {
   };
 
   const getMessage = async(chatId)=>{
-    const response =  await axios.get(`http://localhost:3000/api/chat/messages/${chatId}` , {
+    const response =  await axios.get(`https://gpt-a71p.onrender.com//api/chat/messages/${chatId}` , {
       withCredentials:true
     })
     console.log('messages fetched successfully', response.data.messages)
