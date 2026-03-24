@@ -25,7 +25,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post("http://localhost:3000/api/auth/login", form ,{
+    axios.post("https://gpt-1-od0l.onrender.com/api/auth/login", form ,{
       withCredentials:true
     })
     .then((res)=>{
