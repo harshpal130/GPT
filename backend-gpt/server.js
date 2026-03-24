@@ -11,5 +11,5 @@ initSocketServer(httpServer);
 const PORT = process.env.PORT || 3000;
 
 httpServer.listen(PORT, ()=>{
-    console.log(`server is listening on ${port}`)
+    console.log(`server is listening on ${PORT}`)
 })
