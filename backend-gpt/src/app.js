@@ -4,7 +4,7 @@ const cors = require("cors")
 const app = express();
 const path = require("path");
 
-
+app.set("trust proxy", 1);
 //routes
 const authRoutes = require("./routes/auth.routes")
 const chatRoutes = require("./routes/chats.routes")
