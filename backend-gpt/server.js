@@ -8,8 +8,8 @@ const httpServer = require("http").createServer(app)
 connectDB();
 initSocketServer(httpServer); 
 
+const PORT = process.env.PORT || 3000;
 
-
-httpServer.listen(3000, ()=>{
-    console.log("server is listening on port 3000")
+httpServer.listen(PORT, ()=>{
+    console.log(`server is listening on ${port}`)
 })
