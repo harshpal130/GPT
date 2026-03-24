@@ -2,37 +2,51 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { Link , useNavigate } from 'react-router-dom'
 import '../styles/auth.css'
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/authSlice';
 
 const Login = () => {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch(); // ✅ FIXED (top level)
 
   const [form, setForm] = useState({
     email:"",
     password:""
-  })
+  });
 
   const handleChange = (e)=>{
     setForm({
       ...form,
       [e.target.name]:e.target.value
-    })
-  }
+    });
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    axios.post("https://gpt-a71p.onrender.com//api/auth/login", form ,{
-        withCredentials:true
+    axios.post("http://localhost:3000/api/auth/login", form ,{
+      withCredentials:true
     })
     .then((res)=>{
-        console.log(res)
-        navigate("/")
+      console.log(res);
+
+      dispatch(setUser({
+        user: res.data.user,
+        token: null
+      }));
+
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      navigate("/");
     })
     .catch((err)=>{
-        console.log("error is ",err)
-    })
-  }
+      console.log(err);
+    });
+  };
+
+  
+
 
   return (
     <div className="auth-container">

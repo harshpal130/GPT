@@ -30,7 +30,7 @@ const Home = () => {
 
   useEffect(() => {
     // Connect to socket
-    socketRef.current = io('https://gpt-a71p.onrender.com/',{
+    socketRef.current = io('http://localhost:3000',{
       withCredentials: true,
       
     })
@@ -116,7 +116,7 @@ const Home = () => {
 
   try {
     const response = await axios.post(
-      "https://gpt-a71p.onrender.com//api/chat",
+      "http://localhost:3000/api/chat",
       { title },
       { withCredentials: true }
     );
