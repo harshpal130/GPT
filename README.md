@@ -1,4 +1,4 @@
-# 🤖 GPT Clone (Jarvis)
+# 🤖 GPT Clone (Jervis)
 
 A full-stack ChatGPT-like AI chat application built using **React (Vite)**, **Node.js**, **Express**, **MongoDB**, and **Socket.io**.
 
