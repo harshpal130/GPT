@@ -160,7 +160,7 @@ npm run dev
 
 ## 🧑‍💻 Author
 
-**Harshpal**
+**Harsh Pal**
 
 ---
 
